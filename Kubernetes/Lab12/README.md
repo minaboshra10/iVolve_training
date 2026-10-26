@@ -1,20 +1,29 @@
-# Lab 12: ConfigMap, Secret, StatefulSet and Headless Service
+# Kubernetes Lab 12: MySQL StatefulSet
 
-## Resources
-- ConfigMap: `ivolve-cm`
-- Secret: `ivolve-secret`
-- Headless Service: `mysql`
-- StatefulSet: `mysql`
-- Pod: `mysql-0`
+## Objective
+Deploy MySQL using Kubernetes configuration and workload resources.
 
-## Verification
-```bash
-kubectl get configmap,secret,service,statefulset,pods -n ivolve
-kubectl logs mysql-0 -n ivolve
-kubectl get endpoints mysql -n ivolve
-```
+## Files
+- `lab12.yaml`: Defines the Secret, ConfigMap, headless Service, and StatefulSet.
+- `scripts/verify-mysql.sh`: Verifies resources, Pod readiness, Service endpoints, and recent logs.
 
-## Notes
-- Use demonstration passwords only; never commit real credentials.
-- `emptyDir` storage is temporary and data may be lost when the pod is recreated.
-- Kubernetes Secrets are not automatically encrypted simply because they are stored as Secret resources.
+## Deploy
+From the repository root:
+
+`KUBECONFIG="$HOME/.kube/kubeadm-config" kubectl apply -f Kubernetes/Lab12/lab12.yaml`
+
+## Verify
+`KUBECONFIG="$HOME/.kube/kubeadm-config" Kubernetes/Lab12/scripts/verify-mysql.sh`
+
+## Key Concepts
+- **Secret:** Supplies database passwords to the container.
+- **ConfigMap:** Supplies non-sensitive configuration such as the database host and username.
+- **Headless Service:** Provides stable DNS discovery for StatefulSet Pods.
+- **StatefulSet:** Manages Pods with stable identities.
+- **Resource requests and limits:** Define scheduling requirements and resource ceilings.
+- **nodeSelector and tolerations:** Allow the workload to run on the designated worker.
+
+## Important Notes
+- The manifest uses `emptyDir`, so database files are ephemeral and can be lost when the Pod is recreated.
+- Credentials are for lab use only. Do not put real passwords in Git.
+- A Kubernetes Secret is not, by itself, a guarantee of encryption at rest.
